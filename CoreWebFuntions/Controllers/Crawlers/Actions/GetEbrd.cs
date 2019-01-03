@@ -9,9 +9,9 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CoreWebFuntions.Controllers.Functions.Actions
+namespace CoreWebFuntions.Controllers.Crawlers.Actions
 {
-    public class Crawler
+    public class GetEbrd
     {
         public class Request : IRequest<Response>
         {

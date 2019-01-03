@@ -28,8 +28,15 @@
 
   <ItemGroup>
     <!-- Don't publish the SPA source files, but do show them in the project files list -->
+    <Compile Remove="Controllers\GenerateTest\**" />
     <Content Remove="$(SpaRoot)**" />
+    <Content Remove="Controllers\GenerateTest\**" />
     <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Remove="Controllers\GenerateTest\**" />
+    <None Remove="Controllers\GenerateTest\**" />
   </ItemGroup>
 
   <ItemGroup>
@@ -37,7 +44,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="Controllers\GenerateTest\" />
     <Folder Include="Data\Models\" />
   </ItemGroup>
 

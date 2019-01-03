@@ -8,9 +8,9 @@ using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace CoreWebFuntions.Controllers.Functions.Actions
+namespace CoreWebFuntions.Controllers.Downloads.Actions
 {
-    public class DownloadList
+    public class GetFiles
     {
         public class Request : IRequest<Response>
         {

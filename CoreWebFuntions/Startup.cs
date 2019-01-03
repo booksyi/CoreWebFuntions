@@ -1,9 +1,12 @@
+using CoreWebFuntions.Data;
 using CoreWebFuntions.Data.Configs;
+using HelpersForCore;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.SpaServices.AngularCli;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -21,6 +24,15 @@ namespace CoreWebFuntions
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.Configure<DatabaseConfig>(Configuration.GetSection("ConnectionStrings"));
+            services.Configure<DownloadConfig>(Configuration.GetSection("DownloadConfig"));
+            services.AddEntityFrameworkSqlServer().AddDbContext<DatabaseContext>(options =>
+            {
+                options.UseSqlServer(Configuration.GetConnectionString("ConnectionString"));
+            });
+
+            services.AddScoped(x => new SqlHelper(Configuration.GetConnectionString("ConnectionString")));
+
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddMediatR();
             services.AddSwaggerDocument(configure =>
@@ -32,8 +44,6 @@ namespace CoreWebFuntions
                     document.Info.Description = "ASP.NET Core Web API";
                 };
             });
-
-            services.Configure<DownloadConfig>(Configuration.GetSection("DownloadConfig"));
 
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
