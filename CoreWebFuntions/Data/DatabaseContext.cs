@@ -10,7 +10,11 @@ namespace CoreWebFuntions.Data
     {
         public DatabaseContext(DbContextOptions<DatabaseContext> options) : base(options) { }
 
+        /*
         public DbSet<Models.Article> Articles { get; set; }
+        public DbSet<Models.Epaper> Epapers { get; set; }
+        public DbSet<Models.Member> Members { get; set; }
+        */
 
         protected override void OnModelCreating(ModelBuilder builder)
         {

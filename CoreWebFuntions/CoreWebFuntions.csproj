@@ -20,8 +20,10 @@
     <PackageReference Include="Microsoft.AspNetCore.SpaServices.Extensions" Version="2.1.1" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="2.1.4" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.1.1" />
+    <PackageReference Include="MimeMapping" Version="1.0.1.12" />
     <PackageReference Include="Newtonsoft.Json" Version="12.0.1" />
     <PackageReference Include="Node.js" Version="5.3.0" />
+    <PackageReference Include="NSwag.AspNetCore" Version="12.0.9" />
   </ItemGroup>
 
   <ItemGroup>
@@ -36,7 +38,7 @@
 
   <ItemGroup>
     <Folder Include="Controllers\GenerateTest\" />
-    <Folder Include="Models\" />
+    <Folder Include="Data\Models\" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

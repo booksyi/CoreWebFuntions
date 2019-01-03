@@ -1,3 +1,4 @@
+using CoreWebFuntions.Data.Configs;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -22,6 +23,18 @@ namespace CoreWebFuntions
         {
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddMediatR();
+            services.AddSwaggerDocument(configure =>
+            {
+                configure.PostProcess = document =>
+                {
+                    document.Info.Version = "v1";
+                    document.Info.Title = "CodeGenerator API";
+                    document.Info.Description = "ASP.NET Core Web API";
+                };
+            });
+
+            services.Configure<DownloadConfig>(Configuration.GetSection("DownloadConfig"));
+
             // In production, the Angular files will be served from this directory
             services.AddSpaStaticFiles(configuration =>
             {
@@ -35,6 +48,8 @@ namespace CoreWebFuntions
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();
+                app.UseSwagger();
+                app.UseSwaggerUi3();
             }
             else
             {

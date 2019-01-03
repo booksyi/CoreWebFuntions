@@ -25,5 +25,23 @@ namespace CoreWebFuntions.Controllers.Functions
             Crawler.Response response = await this.mediator.Send(request);
             return new OkObjectResult(response);
         }
+
+        [HttpGet("[action]")]
+        public async Task<ActionResult> Download([FromQuery] Download.Request request)
+        {
+            Download.Response response = await this.mediator.Send(request);
+            if (response == null)
+            {
+                return NotFound();
+            }
+            return File(response.Bytes, response.ContentType, response.FileName);
+        }
+
+        [HttpGet("[action]")]
+        public async Task<ActionResult> DownloadList()
+        {
+            DownloadList.Response response = await this.mediator.Send(new DownloadList.Request());
+            return new OkObjectResult(response.Rows);
+        }
     }
 }
