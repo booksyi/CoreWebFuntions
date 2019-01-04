@@ -1,0 +1,15 @@
+
+<!--<input type="button" value="get data" (click)="getFiles();" />-->
+
+<table border="1" class="table">
+  <tr>
+    <th>伺服器檔案實體路徑</th>
+    <th>最後更新日期</th>
+    <th>下載連結</th>
+  </tr>
+  <tr *ngFor="let resource of resources">
+    <td>{{resource.path}}</td>
+    <td>{{resource.lastWriteTime | date: 'yyyy-MM-dd HH:mm:ss'}}</td>
+    <td align="center"><a href="/api/downloads/download/{{resource.key}}">下載</a></td>
+  </tr>
+</table>

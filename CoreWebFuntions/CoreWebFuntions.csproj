@@ -40,11 +40,25 @@
   </ItemGroup>
 
   <ItemGroup>
+    <None Remove="ClientApp\src\app\core\models\downloads.resource.ts" />
+    <None Remove="ClientApp\src\app\core\models\index.ts" />
+    <None Remove="ClientApp\src\app\downloads\downloads-list\downloads-list.component.ts" />
+    <None Remove="ClientApp\src\app\downloads\downloads.service.ts" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\Helpers\HelpersForCore\HelpersForCore.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="Data\Models\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <TypeScriptCompile Include="ClientApp\src\app\core\models\downloads.resource.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\core\models\index.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\downloads\downloads-list\downloads-list.component.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\downloads\downloads.service.ts" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
