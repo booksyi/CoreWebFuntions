@@ -1,5 +1,6 @@
 using CoreWebFuntions.Data;
 using CoreWebFuntions.Data.Configs;
+using CoreWebFuntions.Services;
 using HelpersForCore;
 using MediatR;
 using Microsoft.AspNetCore.Builder;
@@ -32,6 +33,8 @@ namespace CoreWebFuntions
             });
 
             services.AddScoped(x => new SqlHelper(Configuration.GetConnectionString("ConnectionString")));
+
+            services.AddHostedService<TimedHostedService>();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddMediatR();
