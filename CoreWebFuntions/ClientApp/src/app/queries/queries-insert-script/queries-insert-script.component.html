@@ -1,0 +1,20 @@
+<div>
+  <label>資料表名稱</label>
+  <input type="text" [(ngModel)]="insertScriptQuery.tableName" />
+</div>
+<div>
+  <label>從第幾筆開始</label>
+  <input type="number" [(ngModel)]="insertScriptQuery.startRowNumber" />
+</div>
+<div>
+  <label>到第幾筆結束</label>
+  <input type="number" [(ngModel)]="insertScriptQuery.endRowNumber" />
+</div>
+<div>
+  <label>指令碼包含流水號欄位</label>
+  <input type="checkbox" [(ngModel)]="insertScriptQuery.containsIdentity" />
+</div>
+<div>
+  <input type="button" value="獲取 Insert 指令" (click)="getInsertScript()" />
+</div>
+<pre>{{insertScript}}</pre>

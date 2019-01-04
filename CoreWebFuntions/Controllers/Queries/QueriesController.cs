@@ -30,7 +30,7 @@ namespace CoreWebFuntions.Controllers.Queries
         {
             request.TableName = tableName;
             GetInsertScript.Response response = await this.mediator.Send(request);
-            return Content(string.Join("\r\n", response.Lines));
+            return new OkObjectResult(new { result = string.Join("\r\n", response.Lines) });
         }
     }
 }

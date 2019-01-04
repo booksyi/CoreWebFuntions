@@ -3,7 +3,7 @@ import { DownloadsService } from '@app/downloads/downloads.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'app-root',
+  selector: 'app-downloads-list',
   templateUrl: './downloads-list.component.html',
   styleUrls: ['./downloads-list.component.scss']
 })
@@ -13,12 +13,12 @@ export class DownloadsListComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.downloadsService.getFiles().subscribe(res => this.resources = res);
+    this.getFiles();
   }
 
   resources: DownloadsResource[];
 
-  get getFiles() {
+  getFiles() {
     return this.downloadsService.getFiles().subscribe(res => this.resources = res);
   }
 }

@@ -44,6 +44,10 @@
     <None Remove="ClientApp\src\app\core\models\index.ts" />
     <None Remove="ClientApp\src\app\downloads\downloads-list\downloads-list.component.ts" />
     <None Remove="ClientApp\src\app\downloads\downloads.service.ts" />
+    <None Remove="ClientApp\src\app\lib\index.ts" />
+    <None Remove="ClientApp\src\app\queries\queries-insert-script\queries-insert-script.component.ts" />
+    <None Remove="ClientApp\src\app\queries\queries-select\queries-select.component.ts" />
+    <None Remove="ClientApp\src\app\queries\queries.service.ts" />
   </ItemGroup>
 
   <ItemGroup>
@@ -59,6 +63,10 @@
     <TypeScriptCompile Include="ClientApp\src\app\core\models\index.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\downloads\downloads-list\downloads-list.component.ts" />
     <TypeScriptCompile Include="ClientApp\src\app\downloads\downloads.service.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\lib\index.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\queries\queries-insert-script\queries-insert-script.component.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\queries\queries-select\queries-select.component.ts" />
+    <TypeScriptCompile Include="ClientApp\src\app\queries\queries.service.ts" />
   </ItemGroup>
 
   <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">

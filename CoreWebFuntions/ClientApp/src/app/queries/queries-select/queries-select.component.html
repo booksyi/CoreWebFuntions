@@ -1,0 +1,20 @@
+<div>
+  <label>SQL:</label>
+  <textarea [(ngModel)]="sqlCommand.commandText"></textarea>
+</div>
+<div>
+  <input type="button" value="查詢" (click)="getSqlResult()" />
+</div>
+
+<table border="1" *ngIf="sqlResult && sqlResult.length > 0">
+  <tr>
+    <th *ngFor="let col of sqlResult[0] | keyvalue">
+      {{col.key}}
+    </th>
+  </tr>
+  <tr *ngFor="let row of sqlResult">
+    <td *ngFor="let col of row | keyvalue">
+      {{col.value}}
+    </td>
+  </tr>
+</table>
