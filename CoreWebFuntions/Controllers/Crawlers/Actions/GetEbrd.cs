@@ -92,7 +92,7 @@ namespace CoreWebFuntions.Controllers.Crawlers.Actions
                 List<ResultRow> resultRows = new List<ResultRow>();
 
                 bool @continue = true;
-                int beginPage = 11;
+                int beginPage = 1;
                 for (int i = beginPage; @continue; i++)
                 {
                     List<OriginRow> originRows = new List<OriginRow>();

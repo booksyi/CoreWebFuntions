@@ -2,25 +2,26 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using CoreWebFuntions.Controllers.Crawlers.Actions;
+using CoreWebFuntions.Controllers.Combines.Actions;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
-namespace CoreWebFuntions.Controllers.Crawlers
+namespace CoreWebFuntions.Controllers.Combines
 {
     [Route("api/[controller]")]
-    public class CrawlersController : Controller
+    public class CombinesController : Controller
     {
         private readonly IMediator mediator;
 
-        public CrawlersController(IMediator mediator)
+        public CombinesController(IMediator mediator)
         {
             this.mediator = mediator;
         }
 
-        // /api/crawlers/crawler?PageFrom=
+        // /api/Combines/CombineJson
         [HttpGet("[action]")]
-        public async Task<ActionResult> Crawler([FromQuery] GetAdb.Request request)
+        public async Task<ActionResult> CombineJson([FromQuery] CombineJson.Request request)
         {
             var response = await this.mediator.Send(request);
             return new OkObjectResult(response);
