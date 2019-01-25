@@ -25,5 +25,13 @@ namespace CoreWebFuntions.Controllers.Crawlers
             var response = await this.mediator.Send(request);
             return new OkObjectResult(response);
         }
+
+        // /api/crawlers/getAdb2
+        [HttpGet("getAdb2")]
+        public async Task<ActionResult> Crawler([FromQuery] GetAdb2.Request request)
+        {
+            var response = await this.mediator.Send(request);
+            return new OkObjectResult(response);
+        }
     }
 }

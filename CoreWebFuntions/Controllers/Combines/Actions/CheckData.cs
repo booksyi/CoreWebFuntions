@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace CoreWebFuntions.Controllers.Combines.Actions
 {
-    public class CombineJson
+    public class CheckData
     {
         public class Request : IRequest<Response>
         {
@@ -29,7 +29,7 @@ namespace CoreWebFuntions.Controllers.Combines.Actions
             public decimal financed_by_adb { get; set; }
         }
 
-        public class Response : MultiResponse<Row>
+        public class Response : MultiResponse<string>
         {
         }
 
@@ -41,16 +41,9 @@ namespace CoreWebFuntions.Controllers.Combines.Actions
 
             public async Task<Response> Handle(Request request, CancellationToken token)
             {
-                List<Row> rows = new List<Row>();
-                for (int i = 1; i <= 177; i++)
-                {
-                    //string path = $@"‪D:\temp\output\finish\page-{i}.txt";
-                    string path = $@"‪\..\..\..\..\temp\output\finish\page-{i}.txt";
-                    string json = await File.ReadAllTextAsync(path);
-                    rows.AddRange(JsonConvert.DeserializeObject<Row[]>(json));
-                }
-                await File.WriteAllTextAsync($@"‪\..\..\..\..\temp\output\combine.txt", JsonConvert.SerializeObject(rows));
-                return new Response() { Result = rows };
+                var rows = JsonConvert.DeserializeObject<Row[]>(await File.ReadAllTextAsync(@"D:\temp\output\page-from-1-to-177.txt"));
+                int[] ids = rows.Where(x => x.project_country == x.sector).Select(x => x.id).ToArray();
+                return new Response() { Result = ids.Select(x => $"page: {Convert.ToInt32(x / 20) + 1}, row: {x - (Convert.ToInt32(x / 20) * 20) + 1}") };
             }
         }
     }

@@ -26,5 +26,13 @@ namespace CoreWebFuntions.Controllers.Combines
             var response = await this.mediator.Send(request);
             return new OkObjectResult(response);
         }
+
+        // /api/Combines/CheckData
+        [HttpGet("[action]")]
+        public async Task<ActionResult> CheckData([FromQuery] CheckData.Request request)
+        {
+            var response = await this.mediator.Send(request);
+            return new OkObjectResult(response);
+        }
     }
 }

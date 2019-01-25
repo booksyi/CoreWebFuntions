@@ -25,12 +25,38 @@ namespace CoreWebFuntions.Controllers.Queries
             return new OkObjectResult(response.Rows);
         }
 
+        // /api/Queries/insertScript/{tableName}
         [HttpGet("insertScript/{tableName}")]
         public async Task<ActionResult> GetInsertScript(string tableName, [FromQuery] GetInsertScript.Request request)
         {
             request.TableName = tableName;
-            GetInsertScript.Response response = await this.mediator.Send(request);
+            GetInsertScript.Response response = await mediator.Send(request);
             return new OkObjectResult(new { result = string.Join("\r\n", response.Lines) });
+        }
+
+        // /api/Queries/insertScript/{tableName}/result
+        [HttpGet("insertScript/{tableName}/result")]
+        public async Task<ActionResult> GetInsertScriptResult(string tableName, [FromQuery] GetInsertScript.Request request)
+        {
+            request.TableName = tableName;
+            GetInsertScript.Response response = await mediator.Send(request);
+            return Content(string.Join("\r\n", response.Lines));
+        }
+
+        [HttpGet("selectInsertScript/{tableName}")]
+        public async Task<ActionResult> GetSelectInsertScript(string tableName, [FromQuery] GetSelectInsertScript.Request request)
+        {
+            request.TableName = tableName;
+            GetSelectInsertScript.Response response = await mediator.Send(request);
+            return new OkObjectResult(new { result = string.Join("\r\n", response.Lines) });
+        }
+
+        [HttpGet("selectInsertScript/{tableName}/result")]
+        public async Task<ActionResult> GetSelectInsertScriptResult(string tableName, [FromQuery] GetSelectInsertScript.Request request)
+        {
+            request.TableName = tableName;
+            GetSelectInsertScript.Response response = await mediator.Send(request);
+            return Content(string.Join("\r\n", response.Lines));
         }
     }
 }

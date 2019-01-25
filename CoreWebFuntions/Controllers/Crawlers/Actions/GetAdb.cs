@@ -3,6 +3,7 @@ using HtmlAgilityPack;
 using MediatR;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
@@ -32,6 +33,7 @@ namespace CoreWebFuntions.Controllers.Crawlers.Actions
         {
             public int id { get; set; }
             public string project_country { get; set; }
+            public string sector { get; set; }
             public string project_date { get; set; }
             public string executing_agency { get; set; }
             public string contractor_name { get; set; }
@@ -69,10 +71,15 @@ namespace CoreWebFuntions.Controllers.Crawlers.Actions
                     for (int j = 0; j < originRows.Count; j++)
                     {
                         string[] summaries = originRows[j].Summary.Split(";");
+                        int summariesDateIndex = Array.IndexOf(summaries, summaries.FirstOrDefault(x => x.Trim().StartsWith("Contract date:")));
                         resultRows.Add(new ResultRow()
                         {
                             id = (i - 1) * pageSize + j,
                             project_country = summaries[1],
+                            sector =
+                                summariesDateIndex >= 0 ?
+                                    (summaries.Length > summariesDateIndex - 1 ? summaries[summariesDateIndex - 1] : null) :
+                                    (summaries.Length >= 3 ? summaries[2] : null),
                             project_date = ConvertToDateString(summaries.FirstOrDefault(x => x.Trim().StartsWith("Contract date:")).Replace("Contract date:", "").Trim()),
                             executing_agency = originRows[j].ExecutingAgency,
                             contractor_name = originRows[j].ContractorName,
@@ -96,6 +103,9 @@ namespace CoreWebFuntions.Controllers.Crawlers.Actions
                 {
                     return false;
                 }
+                string fileName = $"{url.Substring(url.IndexOf("?") + 1)}.html";
+                string savePath = System.IO.Path.Combine(@"D:\temp\output\html", fileName);
+                var saveTask = System.IO.File.WriteAllTextAsync(savePath, html);
 
                 HtmlDocument doc = new HtmlDocument();
                 doc.LoadHtml(html);
@@ -151,6 +161,14 @@ namespace CoreWebFuntions.Controllers.Crawlers.Actions
                     int retry = 3;
                     while (html == null && retry > 0)
                     {
+                        using (Process myProcess = new Process())
+                        {
+                            myProcess.StartInfo.UseShellExecute = true;
+                            myProcess.StartInfo.FileName = url;
+                            myProcess.Start();
+                            await Task.Delay(6000);
+                        }
+
                         using (var message = await client.GetAsync(url))
                         {
                             if (message.StatusCode == HttpStatusCode.OK)
@@ -166,13 +184,14 @@ namespace CoreWebFuntions.Controllers.Crawlers.Actions
                                 }
                                 else
                                 {
-                                    await Task.Delay(15000);
+                                    url = $"{url}&{retry}"; 
+                                    await Task.Delay(10000);
                                 }
                             }
                         }
                     }
                 }
-                await Task.Delay(3000);
+                await Task.Delay(500);
                 return html;
             }
 

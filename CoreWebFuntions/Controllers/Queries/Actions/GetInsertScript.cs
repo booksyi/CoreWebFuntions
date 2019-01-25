@@ -56,8 +56,8 @@ namespace CoreWebFuntions.Controllers.Queries.Actions
                     FROM   (SELECT Row_number() 
                                      OVER(ORDER BY [$OrderBy]) AS [__RowNumber], * 
                             FROM   [$TableName]) t 
-                    WHERE  [__rownumber] BETWEEN @Start AND @End 
-                    ORDER  BY [__rownumber] ";
+                    WHERE  [__RowNumber] BETWEEN @Start AND @End 
+                    ORDER  BY [__RowNumber] ";
 
                 string orderby = null;
                 if (tableSchema.Identity != null)
@@ -106,9 +106,18 @@ namespace CoreWebFuntions.Controllers.Queries.Actions
                             {
                                 values.Add($"{reader[field.Name]}");
                             }
+                            else if (field.TypeName.In("date"))
+                            {
+                                values.Add($"'{reader[field.Name]:yyyy/MM/dd}'");
+                            }
+                            else if (field.TypeName.In("datetime"))
+                            {
+                                values.Add($"'{reader[field.Name]:yyyy/MM/dd HH:mm:ss}'");
+                            }
                             else
                             {
-                                values.Add($"'{reader[field.Name]}'");
+                                string value = Convert.ToString(reader[field.Name]).Replace("'", "''");
+                                values.Add($"'{value}'");
                             }
                         }
                         lines.Add($"INSERT INTO [{tableSchema.TableName}] ({string.Join(", ", fields)}) VALUES ({string.Join(", ", values)});");
