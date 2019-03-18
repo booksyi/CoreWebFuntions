@@ -29,8 +29,9 @@ namespace CoreWebFuntions.Controllers.Combines.Actions
             public decimal financed_by_adb { get; set; }
         }
 
-        public class Response : MultiResponse<Row>
+        public class Response
         {
+            public List<Row> Result { get; set; }
         }
 
         public class Handler : IRequestHandler<Request, Response>

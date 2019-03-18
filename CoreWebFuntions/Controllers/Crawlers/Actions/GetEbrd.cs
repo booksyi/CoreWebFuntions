@@ -77,8 +77,9 @@ namespace CoreWebFuntions.Controllers.Crawlers.Actions
             public string Context { get; set; }
         }
 
-        public class Response : MultiResponse<ResultRow>
+        public class Response
         {
+            public List<ResultRow> Result { get; set; }
         }
 
         public class Handler : IRequestHandler<Request, Response>

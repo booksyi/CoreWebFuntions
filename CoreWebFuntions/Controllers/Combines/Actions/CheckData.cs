@@ -29,8 +29,9 @@ namespace CoreWebFuntions.Controllers.Combines.Actions
             public decimal financed_by_adb { get; set; }
         }
 
-        public class Response : MultiResponse<string>
+        public class Response
         {
+            public List<string> Result { get; set; }
         }
 
         public class Handler : IRequestHandler<Request, Response>
@@ -43,7 +44,7 @@ namespace CoreWebFuntions.Controllers.Combines.Actions
             {
                 var rows = JsonConvert.DeserializeObject<Row[]>(await File.ReadAllTextAsync(@"D:\temp\output\page-from-1-to-177.txt"));
                 int[] ids = rows.Where(x => x.project_country == x.sector).Select(x => x.id).ToArray();
-                return new Response() { Result = ids.Select(x => $"page: {Convert.ToInt32(x / 20) + 1}, row: {x - (Convert.ToInt32(x / 20) * 20) + 1}") };
+                return new Response() { Result = ids.Select(x => $"page: {Convert.ToInt32(x / 20) + 1}, row: {x - (Convert.ToInt32(x / 20) * 20) + 1}").ToList() };
             }
         }
     }

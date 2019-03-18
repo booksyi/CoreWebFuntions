@@ -1,3 +1,4 @@
+using AutoMapper;
 using CoreWebFuntions.Data;
 using CoreWebFuntions.Data.Configs;
 using CoreWebFuntions.Services;
@@ -25,6 +26,10 @@ namespace CoreWebFuntions
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            Controllers.Routes.HttpParametersService parametersService = new Controllers.Routes.HttpParametersService();
+            parametersService.Apply();
+
+
             services.Configure<DatabaseConfig>(Configuration.GetSection("ConnectionStrings"));
             services.Configure<DownloadConfig>(Configuration.GetSection("DownloadConfig"));
             services.AddEntityFrameworkSqlServer().AddDbContext<DatabaseContext>(options =>
@@ -33,8 +38,8 @@ namespace CoreWebFuntions
             });
 
             services.AddScoped(x => new SqlHelper(Configuration.GetConnectionString("ConnectionString")));
-
             services.AddHostedService<TimedHostedService>();
+            services.AddAutoMapper();
 
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1);
             services.AddMediatR();

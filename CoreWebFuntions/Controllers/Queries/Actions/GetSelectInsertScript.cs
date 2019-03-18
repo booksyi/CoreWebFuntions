@@ -1,4 +1,5 @@
-﻿using CoreWebFuntions.Data.Configs;
+﻿using AutoMapper;
+using CoreWebFuntions.Data.Configs;
 using HelpersForCore;
 using MediatR;
 using Microsoft.Extensions.Options;
@@ -28,27 +29,31 @@ namespace CoreWebFuntions.Controllers.Queries.Actions
         {
             private readonly DatabaseConfig databaseConfig;
             private readonly SqlHelper sqlHelper;
+            private readonly IMapper mapper;
 
-            public Handler(IOptions<DatabaseConfig> databaseConfig, SqlHelper sqlHelper)
+            public Handler(IOptions<DatabaseConfig> databaseConfig, SqlHelper sqlHelper, IMapper mapper)
             {
                 this.databaseConfig = databaseConfig.Value;
                 this.sqlHelper = sqlHelper;
+                this.mapper = mapper;
             }
 
             public async Task<Response> Handle(Request request, CancellationToken token)
             {
                 List<string> lines = new List<string>();
-                DbTableSchema tableSchema = CodingHelper.GetDbTableSchema(databaseConfig.ConnectionString, request.TableName);
+                DbSchemaTable tableSchema = CodingHelper.GetDbTableSchema(databaseConfig.ConnectionString, request.TableName);
 
                 if (request.ContainsIdentity && tableSchema.Identity != null)
                 {
-                    lines.Add($"SELECT 'SET IDENTITY_INSERT [{tableSchema.TableName}] ON'");
+                    lines.Add($"SELECT 'SET IDENTITY_INSERT [{tableSchema.Name}] ON'");
                 }
 
                 List<string> fields = new List<string>();
                 List<string> values = new List<string>();
                 foreach (var field in tableSchema.Fields)
                 {
+                    var csProperty = mapper.Map<CsSchemaProperty>(field);
+
                     if (field.IsIdentity && (request.ContainsIdentity == false))
                     {
                         continue;
@@ -56,19 +61,19 @@ namespace CoreWebFuntions.Controllers.Queries.Actions
                     fields.Add($"[{field.Name}]");
 
                     string value = $"[{field.Name}]";
-                    if (field.ForCs.TypeName != "string")
+                    if (csProperty.TypeName != "string")
                     {
                         value = $"CAST({value} AS NVARCHAR)";
                     }
-                    if (field.ForCs.TypeName == "string")
+                    if (csProperty.TypeName == "string")
                     {
                         value = $"({value} COLLATE Chinese_Taiwan_Stroke_CI_AS)";
                     }
-                    if (field.ForCs.TypeName.In("DateTime", "DateTime?"))
+                    if (csProperty.TypeName.In("DateTime", "DateTime?"))
                     {
                         value = $"'''' + {value} + ''''";
                     }
-                    if (field.ForCs.TypeName == "string")
+                    if (csProperty.TypeName == "string")
                     {
                         value = $"'''' + REPLACE({value}, '''', '''''') + ''''";
                     }
@@ -81,14 +86,14 @@ namespace CoreWebFuntions.Controllers.Queries.Actions
 
                 string sql = $@"
                     SELECT '
-                    INSERT INTO [{tableSchema.TableName}] ({string.Join(", ", fields)})
+                    INSERT INTO [{tableSchema.Name}] ({string.Join(", ", fields)})
                     VALUES (' + {string.Join(" + ', ' + ", values)} + ');'
-                    FROM [{tableSchema.TableName}]".DecreaseIndent();
+                    FROM [{tableSchema.Name}]".DecreaseIndent();
                 lines.Add(sql);
 
                 if (request.ContainsIdentity && tableSchema.Identity != null)
                 {
-                    lines.Add($"SELECT 'SET IDENTITY_INSERT [{tableSchema.TableName}] OFF'");
+                    lines.Add($"SELECT 'SET IDENTITY_INSERT [{tableSchema.Name}] OFF'");
                 }
 
                 return new Response() { Lines = lines };

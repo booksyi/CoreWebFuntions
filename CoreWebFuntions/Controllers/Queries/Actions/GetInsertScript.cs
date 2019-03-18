@@ -1,4 +1,5 @@
-﻿using CoreWebFuntions.Data;
+﻿using AutoMapper;
+using CoreWebFuntions.Data;
 using CoreWebFuntions.Data.Configs;
 using HelpersForCore;
 using MediatR;
@@ -34,21 +35,23 @@ namespace CoreWebFuntions.Controllers.Queries.Actions
         {
             private readonly DatabaseConfig databaseConfig;
             private readonly SqlHelper sqlHelper;
+            private readonly IMapper mapper;
 
-            public Handler(IOptions<DatabaseConfig> databaseConfig, SqlHelper sqlHelper)
+            public Handler(IOptions<DatabaseConfig> databaseConfig, SqlHelper sqlHelper, IMapper mapper)
             {
                 this.databaseConfig = databaseConfig.Value;
                 this.sqlHelper = sqlHelper;
+                this.mapper = mapper;
             }
 
             public async Task<Response> Handle(Request request, CancellationToken token)
             {
                 List<string> lines = new List<string>();
-                DbTableSchema tableSchema = CodingHelper.GetDbTableSchema(databaseConfig.ConnectionString, request.TableName);
+                DbSchemaTable tableSchema = CodingHelper.GetDbTableSchema(databaseConfig.ConnectionString, request.TableName);
 
                 if (request.ContainsIdentity && tableSchema.Identity != null)
                 {
-                    lines.Add($"SET IDENTITY_INSERT [{tableSchema.TableName}] ON");
+                    lines.Add($"SET IDENTITY_INSERT [{tableSchema.Name}] ON");
                 }
 
                 string sql = @"
@@ -68,18 +71,18 @@ namespace CoreWebFuntions.Controllers.Queries.Actions
                 {
                     orderby = tableSchema.PrimaryKeys.First().Name;
                 }
-                else if (tableSchema.Fields.Any(x => x.ForCs.TypeName == "int"))
-                {
-                    orderby = tableSchema.Fields.First(x => x.ForCs.TypeName == "int").Name;
-                }
                 else
                 {
-                    orderby = tableSchema.Fields.FirstOrDefault().Name;
+                    orderby = tableSchema.Fields.FirstOrDefault(x => mapper.Map<CsSchemaProperty>(x).TypeName == "int")?.Name;
+                    if (string.IsNullOrWhiteSpace(orderby))
+                    {
+                        orderby = tableSchema.Fields.FirstOrDefault().Name;
+                    }
                 }
 
                 sql = sql.Replace("$Fields", string.Join(", ", tableSchema.Fields.Select(x => $"[{x.Name}]")));
                 sql = sql.Replace("$OrderBy", orderby);
-                sql = sql.Replace("$TableName", tableSchema.TableName);
+                sql = sql.Replace("$TableName", tableSchema.Name);
 
                 await sqlHelper.ExecuteReaderEachAsync(sql,
                     new SqlParameter[]
@@ -120,12 +123,12 @@ namespace CoreWebFuntions.Controllers.Queries.Actions
                                 values.Add($"'{value}'");
                             }
                         }
-                        lines.Add($"INSERT INTO [{tableSchema.TableName}] ({string.Join(", ", fields)}) VALUES ({string.Join(", ", values)});");
+                        lines.Add($"INSERT INTO [{tableSchema.Name}] ({string.Join(", ", fields)}) VALUES ({string.Join(", ", values)});");
                     });
 
                 if (request.ContainsIdentity && tableSchema.Identity != null)
                 {
-                    lines.Add($"SET IDENTITY_INSERT [{tableSchema.TableName}] OFF");
+                    lines.Add($"SET IDENTITY_INSERT [{tableSchema.Name}] OFF");
                 }
 
                 return new Response() { Lines = lines };
