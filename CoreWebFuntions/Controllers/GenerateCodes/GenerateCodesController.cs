@@ -40,5 +40,12 @@ namespace CoreWebFuntions.Controllers.GenerateCodes
             var response = await this.mediator.Send(request);
             return Ok(response.Code);
         }
+
+        [HttpGet("[action]")]
+        public async Task<ActionResult> Test3([FromQuery] Test3.Request request)
+        {
+            var response = await this.mediator.Send(request);
+            return Ok(response.Code);
+        }
     }
 }

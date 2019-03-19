@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 
 namespace CoreWebFuntions.Controllers.GenerateCodes.Actions
 {
-    public class Test2
+    public class Test3
     {
         public class Request : IRequest<Response>
         {
@@ -36,15 +36,37 @@ namespace CoreWebFuntions.Controllers.GenerateCodes.Actions
 
             public async Task<Response> Handle(Request request, CancellationToken token)
             {
-                string connectionString = "Server=LAPTOP-RD9P71LP\\SQLEXPRESS;Database=TEST1;UID=sa;PWD=1234;";
-
-                DbSchema.Table tableSchema = CodingHelper.GetDbTableSchema(connectionString, "Article");
-                CsSchema.Class csClass = mapper.Map<CsSchema.Class>(tableSchema);
+                CsSchema.Class csClass = new CsSchema.Class("Project");
+                csClass.Access = CsSchema.Access.Public;
+                csClass.Fields = new CsSchema.Field[]
+                {
+                    new CsSchema.Field("bool", "isAA")
+                };
+                csClass.Properties = new CsSchema.Property[]
+                {
+                    new CsSchema.Property("string", "ppp1")
+                    {
+                        Attributes = new CsSchema.Attribute[]
+                        {
+                            new CsSchema.Attribute("Key"),
+                            new CsSchema.Attribute("Column")
+                        }
+                    }
+                };
+                csClass.Attributes = new CsSchema.Attribute[]
+                {
+                    new CsSchema.Attribute("Table", "C1", "QQ = \"X\"", "Z = 123")
+                };
 
                 CsSchema.Unit unit = new CsSchema.Unit();
                 CsSchema.Namespace @namespace = new CsSchema.Namespace();
-                @namespace.Name = "QQ";
+                @namespace.Name = "TestProject";
                 @namespace.Classes = new CsSchema.Class[] { csClass };
+                unit.Usings = new string[]
+                {
+                    "System",
+                    "System.Collections.Generic"
+                };
                 unit.Namespaces = new CsSchema.Namespace[] { @namespace };
                 var syntax = mapper.Map<CompilationUnitSyntax>(unit);
 

@@ -47,7 +47,7 @@ namespace CoreWebFuntions.Controllers.Queries.Actions
             public async Task<Response> Handle(Request request, CancellationToken token)
             {
                 List<string> lines = new List<string>();
-                DbSchemaTable tableSchema = CodingHelper.GetDbTableSchema(databaseConfig.ConnectionString, request.TableName);
+                DbSchema.Table tableSchema = CodingHelper.GetDbTableSchema(databaseConfig.ConnectionString, request.TableName);
 
                 if (request.ContainsIdentity && tableSchema.Identity != null)
                 {
@@ -73,7 +73,7 @@ namespace CoreWebFuntions.Controllers.Queries.Actions
                 }
                 else
                 {
-                    orderby = tableSchema.Fields.FirstOrDefault(x => mapper.Map<CsSchemaProperty>(x).TypeName == "int")?.Name;
+                    orderby = tableSchema.Fields.FirstOrDefault(x => mapper.Map<CsSchema.Property>(x).TypeName == "int")?.Name;
                     if (string.IsNullOrWhiteSpace(orderby))
                     {
                         orderby = tableSchema.Fields.FirstOrDefault().Name;

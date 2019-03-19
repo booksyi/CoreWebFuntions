@@ -41,7 +41,7 @@ namespace CoreWebFuntions.Controllers.Queries.Actions
             public async Task<Response> Handle(Request request, CancellationToken token)
             {
                 List<string> lines = new List<string>();
-                DbSchemaTable tableSchema = CodingHelper.GetDbTableSchema(databaseConfig.ConnectionString, request.TableName);
+                DbSchema.Table tableSchema = CodingHelper.GetDbTableSchema(databaseConfig.ConnectionString, request.TableName);
 
                 if (request.ContainsIdentity && tableSchema.Identity != null)
                 {
@@ -52,7 +52,7 @@ namespace CoreWebFuntions.Controllers.Queries.Actions
                 List<string> values = new List<string>();
                 foreach (var field in tableSchema.Fields)
                 {
-                    var csProperty = mapper.Map<CsSchemaProperty>(field);
+                    var csProperty = mapper.Map<CsSchema.Property>(field);
 
                     if (field.IsIdentity && (request.ContainsIdentity == false))
                     {
